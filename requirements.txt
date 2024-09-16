@@ -5,3 +5,6 @@ seaborn
 scikit-learn
 Flask
 ipykernel 
+plotly
+nbformat
+statsmodels

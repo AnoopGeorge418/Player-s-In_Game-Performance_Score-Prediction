@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>In-Game Players Performance Prediction - Regression Model</title>
+    <meta name="description" content="This model predicts player win rankings based on in-game performance metrics.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Background settings */
+        body {
+            background: url('https://static1.pocketlintimages.com/wordpress/wp-content/uploads/144028-games-feature-pubg-image1-zkpdntqgbc.jpg?q=50&fit=crop&w=1100&h=618&dpr=1.5') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Form container settings */
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            overflow-y: auto;
+            height: 100vh; /* Adjust height based on content */
+        }
+
+        /* Form title */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Form labels and inputs */
+        .form-group label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            font-size: 0.9rem;
+            padding: 8px;
+            margin-bottom: 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Submit and Clear buttons */
+        .btn-primary {
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #ffcc00;
+            border-color: #ffcc00;
+            color: #333;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffc107;
+            color: black;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-secondary {
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Prediction result display */
+        h2 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class='form-container'>
+        <form action="{{ url_for('predict_data') }}" method="post">
+            <h1>Player Performance Prediction</h1>
+            
+            <div class='form-group'>
+                <label for="boosts">Boosts</label>
+                <input type="text" name="boosts" value="{{ request.form.get('boosts', '') }}" placeholder="Enter boosts" required>
+                
+                <label for="players_knocked">Players Knocked</label>
+                <input type="text" name="players_knocked" value="{{ request.form.get('players_knocked', '') }}" placeholder="Enter players knocked" required>
+                
+                <label for="kill_rank">Kill Rank</label>
+                <input type="text" name="kill_rank" value="{{ request.form.get('kill_rank', '') }}" placeholder="Enter kill rank" required>
+                
+                <label for="revives">Revives</label>
+                <input type="text" name="revives" value="{{ request.form.get('revives', '') }}" placeholder="Enter revives" required>
+                
+                <label for="rankPoints">Rank Points</label>
+                <input type="text" name="rankPoints" value="{{ request.form.get('rankPoints', '') }}" placeholder="Enter rank points" required>
+                
+                <label for="matchDuration">Match Duration</label>
+                <input type="text" name="matchDuration" value="{{ request.form.get('matchDuration', '') }}" placeholder="Enter match duration" required>
+                
+                <label for="longestKill">Longest Kill</label>
+                <input type="text" name="longestKill" value="{{ request.form.get('longestKill', '') }}" placeholder="Enter longest kill" required>
+                
+                <label for="kills">Kills</label>
+                <input type="text" name="kills" value="{{ request.form.get('kills', '') }}" placeholder="Enter kills" required>
+                
+                <label for="winPoints">Win Points</label>
+                <input type="text" name="winPoints" value="{{ request.form.get('winPoints', '') }}" placeholder="Enter win points" required>
+                
+                <label for="walkDistance">Walk Distance</label>
+                <input type="text" name="walkDistance" value="{{ request.form.get('walkDistance', '') }}" placeholder="Enter walk distance" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Predict</button>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear</button>
+        </form>
+        
+        {% if results %}
+            <h2>Predicted Win Points: {{ results }}</h2>
+        {% endif %}
+    </div>
+
+    <script>
+        function resetForm() {
+            // Reset form inputs
+            document.querySelectorAll('.form-group input').forEach(input => input.value = '');
+            // Clear prediction result
+            document.querySelector('h2').textContent = '';
+        }
+    </script>
+</body>
+</html>
